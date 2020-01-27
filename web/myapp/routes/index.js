@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const { check, validationResult } = require('express-validator');
 var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId;
+var bodyParser = require("body-parser");
 var url = "mongodb://localhost:27017/";
 
 /* GET home page. */
@@ -41,17 +43,32 @@ router.get('/projects', function(req, res, next) {
   
 });
 router.get('/projects/:id', function(req, res){
-  let id = parseInt(req.params.id);
+  let id = req.params.id;
+  console.log("myid", id);
   console.log('id --- > ', typeof id);
   //  once you got the project id
   // make the database call to check if it exists  
-  if(id < data.length ){
-    res.render('project-detail', { data : data[id] })
-  }else{
+
+  MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
+    let dbo = db.db("portfolio");
+    console.log("myid2", id);
+
+    dbo.collection('projects').findOne({ _id: ObjectId(id) }, function (err, data) {
+      if (err) throw err;
+      console.log("hii", data);
+      db.close();
+      res.render('project-detail', { title: 'Projects | Mr.Thirumoorthi', 'projectsNav': true, data: data });
+    })
+  });
+
+  // if(id < data.length ){
+  //   res.render('project-detail', { data : data[id] })
+  // }else{
     // 404 
-    console.log('page not found')
-    res.send('Page not found')
-  }
+    // console.log('page not found')
+    // res.send('Page not found')
+  // }
 })
 /* GET blog page with data*/
 router.get('/blog', function(req, res, next) {
@@ -67,6 +84,53 @@ router.get('/blog', function(req, res, next) {
     })
   });
 });
+
+/* start: GET Blog detail page section*/
+router.get('/blog/:id', function (req, res) {
+  let id = req.params.id;
+  console.log("myid", typeof id);
+  console.log('id --- > ', id);
+  //  once you got the project id
+  // make the database call to check if it exists
+  MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
+    let dbo = db.db("portfolio");
+    console.log("myid2", id);
+    dbo.collection('post').findOne({ "_id": ObjectId(id) }, function (err, post) {
+      if (err) throw err;
+      console.log(JSON.stringify(post));
+      db.close();
+      res.render('blog-details', { post: post })
+    });
+  });
+})
+
+/* End: GET Blog detail page section */
+
+/* Start:New letter page */
+router.get('/subscribe', function (req, res, next) {
+  res.render('index');
+  console.log('accessing post');
+});
+router.post('/subscribe', function (req, res) {
+  let email = req.body.email;
+  console.log("email");
+  console.log('accessing post');
+  MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
+    let dbo = db.db("portfolio");
+    let data = { email };
+    dbo.collection('newsletter').insertOne(data, function (err, obj) {
+      if (err) throw err;
+      console.log(JSON.stringify(data));
+      db.close();
+      res.render('index', { success: true });
+    })
+  });
+});
+
+/* End : News letter page */
+
 /* GET About page.*/
 router.get('/about', function(req, res){
   res.render('about', {title: 'About | Mr.Teertha', 'aboutNav': true});
@@ -102,3 +166,4 @@ router.post('/contact', [
     }
 })
 module.exports = router;
+ 
