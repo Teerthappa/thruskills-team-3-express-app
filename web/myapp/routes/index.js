@@ -10,7 +10,7 @@ var url = "mongodb://localhost:27017/";
 router.get('/',function(req,res){
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    let dbo = db.db("Portfolio");
+    let dbo = db.db("portfolio");
     let d = new Date();
     // get the projects
     dbo.collection('projects').find({}).limit(3).toArray(function(err, projects){
