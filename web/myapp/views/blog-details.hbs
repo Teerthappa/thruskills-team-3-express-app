@@ -1,6 +1,6 @@
-<div class="container-fluid" style="margin-top:79px">
+<div class="container" style="margin-top:79px">
     {{!-- <a href="/projects">Projects</a><br> --}}
-    <div class="row container">
+    <div class="row">
         <div class="col-md-3">
           <div class="sidebar">
             <h3 class="title" style="font-size: 20px;">Link</h3>
@@ -33,7 +33,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item bc-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item bc-item"><a href="/blog">Blog</a></li>
-                    <li class="breadcrumb-item" aria-current="page">Blog detail</li>
+                    <li class="breadcrumb-item" aria-current="page">{{post.title}}</li>
                 </ol>
   </nav>
 
@@ -62,4 +62,5 @@
             </a>
       </div>    
     </div>
-</div>       
+</div>  
+</div>     
