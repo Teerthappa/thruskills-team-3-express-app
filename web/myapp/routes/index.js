@@ -10,18 +10,18 @@ var url = "mongodb://localhost:27017/";
 router.get('/',function(req,res){
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    let dbo = db.db("portfolio");
+    let dbo = db.db("Portfolio");
     let d = new Date();
     // get the projects
     dbo.collection('projects').find({}).limit(3).toArray(function(err, projects){
       if (err) throw err;
       console.log(JSON.stringify(projects));
 // get the posts
-      dbo.collection('posts').find({}).limit(3).toArray(function(err, posts){
+      dbo.collection('post').find({}).limit(3).toArray(function(err, post){
         if (err) throw err;
-        console.log(JSON.stringify(posts));
+        console.log(JSON.stringify(post));
       db.close();
-      res.render('index', { title: 'Portfolio | Mr.Teertha', 'indexNav': true, projects: projects, posts: posts});
+      res.render('index', { title: 'Portfolio | Mr.Teertha', 'indexNav': true, projects: projects, post: post});
     })
   })
   });   
